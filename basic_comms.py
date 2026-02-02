@@ -19,10 +19,7 @@ def check_vat(vat): # + find ID
         "SELECT client_id FROM clients WHERE vat = ?",(vat,)
     )
     res = vat_lookup.fetchone()
-    if res:
-        return res
-    else:
-        return False
+    return res
 
 def fetch_account_balance(ban): #+Check stautus
     ban_lookup = cursor.execute(
@@ -46,12 +43,19 @@ def create_customer(name,dob,phoneno,email,homeaddr,vat,citizenof,idnum):
         return 'Client is already in database',False
 
 def open_account(vat):
-    if check_vat(vat)!=False:
-        new_ban = r.randint(100000,999999)
-        while fetch_account_balance(new_ban)!= False :
-            new_ban = r.randint(100000,999999)
-        new_account = cursor.execute(
-            "INSERT INTO accounts (ban,owner_id,balance) VALUES(?,?,?)",(new_ban,check_vat(vat),0.00)
+    client_res = check_vat(vat) 
+    
+    if client_res: 
+        client_id = client_res[0] 
+        
+        new_ban = r.randint(100000, 999999)
+        while fetch_account_balance(new_ban):
+            new_ban = r.randint(100000, 999999)
+            
+ 
+        cursor.execute(
+            "INSERT INTO accounts (ban, owner_id, balance) VALUES (?, ?, ?)",
+            (new_ban, client_id, 0.00)
         )
         conn.commit()
         return new_ban

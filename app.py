@@ -1,5 +1,6 @@
 from tkinter import *
 import tkinter as tk 
+from tkinter import ttk
 from tkinter import messagebox
 from basic_comms import *
 
@@ -53,9 +54,9 @@ def create_customer_gui():
         idnum = idnum_e.get()
         id,status = create_customer(name,dob,phoneno,email,homeaddr,vat,citizenof,idnum)
         if status == True:
-            tk.messagebox.showinfo(f"Customer {id} Created")
+            messagebox.showinfo(f"Customer {id} Created")
         else:
-            tk.messagebox.showerror("Found")
+            messagebox.showerror("Found")
     
     tk.Button(new_customer,text='Apply',command=create_customer_bridge).pack()
 
@@ -63,7 +64,24 @@ def create_customer_gui():
 
     new_customer.mainloop()
 
+def open_account_gui():
+    open_account_n= tk.Tk()
+    open_account_n.title("New Account")
+    tk.Label(open_account_n,text="VAT of account owner").pack()
+    vat_e = tk.Entry(open_account_n)
+    vat_e.pack()
+    def sbt_acc_opening():
+        vat = vat_e.get()
+        new_ban = open_account(vat)
+        if  new_ban!= False:
+            messagebox.showinfo("Account Created!",f"Account No. {str(new_ban)}")
+        else:
+            messagebox.showerror("Error!","Customer does not exist")
+    tk.Button(open_account_n,text='Create',command=sbt_acc_opening).pack()
+    open_account_n.mainloop()
+
 tk.Label(root,text='Welcome to the demo bank simulator!').pack()
 tk.Button(root,text='Create Customer',command=create_customer_gui).pack()
+tk.Button(root,text='Open account (must be existing client)',command=open_account_gui).pack()
 
 root.mainloop()
