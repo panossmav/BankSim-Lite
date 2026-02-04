@@ -62,4 +62,31 @@ def open_account(vat):
     else:
         return False
 
+def get_account_balance(acc):
+    account_balance = cursor.execute(
+        "SELECT balance FROM accounts WHERE ban = ?",(acc,)
+    )
+    final_balance = account_balance.fetchone()
+    if cursor.rowcount == 0:
+        return None 
+    else:
+        return float(final_balance[0])
+
+
+
+def deposit(acc, amount):
+    balance_tuple = get_account_balance(acc)
+    
+    if balance_tuple is not None:
+        current_balance = balance_tuple
+        new_balance = current_balance + float(amount)
+        
+        cursor.execute(
+            "UPDATE accounts SET balance = ? WHERE ban = ?",
+            (new_balance, acc)
+        )
+        conn.commit()
+        return new_balance
+    else:
+        return False
 

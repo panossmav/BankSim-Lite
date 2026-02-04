@@ -80,8 +80,34 @@ def open_account_gui():
     tk.Button(open_account_n,text='Create',command=sbt_acc_opening).pack()
     open_account_n.mainloop()
 
+def deposit_gui():
+    deposit_win = tk.Tk()
+    deposit_win.title("Deposit Into Account")
+
+    tk.Label(deposit_win,text="Account Number").pack()
+    ban_e = Entry(deposit_win)
+    ban_e.pack()
+
+    tk.Label(deposit_win,text="Amount to deposit").pack()
+    am_e = Entry(deposit_win)
+    am_e.pack()
+
+    def sbt_deposit():
+        ban = ban_e.get()
+        am = am_e.get()
+        deposit_res = deposit(ban,am)
+        if deposit_res != False:
+            messagebox.showinfo('Withdrawl Completed',f"New balance: {deposit_res}")
+        else:
+            messagebox.showerror('Error!','Bank account not found!!')
+
+    tk.Button(deposit_win,text='Submit',command=sbt_deposit).pack()
+
+    deposit_win.mainloop()
+
 tk.Label(root,text='Welcome to the demo bank simulator!').pack()
 tk.Button(root,text='Create Customer',command=create_customer_gui).pack()
 tk.Button(root,text='Open account (must be existing client)',command=open_account_gui).pack()
+tk.Button(root,text='Deposit from Bank Account',command=deposit_gui).pack()
 
 root.mainloop()
