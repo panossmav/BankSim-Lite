@@ -32,7 +32,8 @@ def fetch_account_balance(ban): #+Check stautus
         return False
 
 def create_customer(name,dob,phoneno,email,homeaddr,vat,citizenof,idnum):
-    if check_vat(vat) == False:
+    checked_vat = check_vat(vat)
+    if not checked_vat:
         new_cust = cursor.execute(
             "INSERT INTO clients (name,dob,phoneno,email,homeaddr,vat,citizenof,idnum) VALUES(?,?,?,?,?,?,?,?)",(name,dob,phoneno,email,homeaddr,vat,citizenof,idnum)
         )
@@ -62,6 +63,7 @@ def open_account(vat):
     else:
         return False
 
+
 def get_account_balance(acc):
     account_balance = cursor.execute(
         "SELECT balance FROM accounts WHERE ban = ?",(acc,)
@@ -89,4 +91,23 @@ def deposit(acc, amount):
         return new_balance
     else:
         return False
+
+
+
+
+
+def withdraw(acc,amount):
+    balance = get_account_balance(acc)
+    if balance:
+        if balance >= amount:
+            balance_updater = cursor.execute(
+                "SET balance = ? WHERE ban = ?",(balance-amount,acc)
+            )
+            conn.commit()
+            return balance-amount
+        else:
+            return 'Insufficient Funds!'
+    else:
+        return False
+
 
